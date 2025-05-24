@@ -92,7 +92,7 @@ jobs:
             - 推荐系统：ColorOS 14 / RealmeUI 5.0 (安卓15理论通用，未测试)
             - SukiSU管理器下载：[SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra/releases)
             ### ⏫️ 更新内容：
-            - 更新SukiSU Ultra至最新版本（${{ env.KSUVER }}）
+            - 更新SukiSU Ultra至最新版本（${{ needs.build.outputs.KSUVER }}）
             - (预留)
             ### 📋 安装方法 | Installation Guide
             1. 若你的手机已经安装了第三方Recovery（如TWRP)，可下载对应机型的AnyKernel刷机包后进入Recovery模式，通过Recovery刷入刷机包后重启设备
