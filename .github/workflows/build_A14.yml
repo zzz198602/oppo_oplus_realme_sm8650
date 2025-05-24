@@ -60,7 +60,7 @@ jobs:
           #git config --global user.name "github-actions[bot]"
           #git config --global user.email "github-actions[bot]@users.noreply.github.com"
           sudo apt update
-          sudo apt-get install curl bison flex make binutils dwarves git zip perl make gcc python3 bc libssl-dev -y
+          sudo apt-get install curl bison flex make binutils dwarves git lld zip perl make gcc python3 bc libssl-dev -y
           sudo rm -rf ./llvm.sh
           sudo wget https://apt.llvm.org/llvm.sh
           sudo chmod +x llvm.sh
