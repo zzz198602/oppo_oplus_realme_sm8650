@@ -116,8 +116,6 @@ jobs:
         run: |
           if [[ "${{ github.event.inputs.lz4k_enable }}" == "true" ]]; then
             cd kernel_workspace/common
-            cp ../SukiSU_patch/hooks/new_hooks.patch ./
-            patch -p1 < new_hooks.patch
             cp -r ../SukiSU_patch/other/zram/lz4k/include/linux/* ./include/linux/
             cp -r ../SukiSU_patch/other/zram/lz4k/lib/* ./lib
             cp -r ../SukiSU_patch/other/zram/lz4k/crypto/* ./crypto
