@@ -70,12 +70,12 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "OPPO+OPlus+Realme-A14-build-$TIME"
-          name: "OPPO+OPlus+Realme A14 $FULL_VERSION"
+          tag_name: "OPPO+OPlus+Realme-A14-build-${TIME}"
+          name: "OPPO+OPlus+Realme A14 ${FULL_VERSION}"
           body: |
             ### 📱 欧加真 Android 14 SukiSU-Ultra SM8650 通用内核 | 构建信息
-            - 内核版本号: ${FULL_VERSION}
-            - 编译时间: ${TIME_FORM}
+            - 内核版本号: ${{ env.FULL_VERSION }}
+            - 编译时间: ${{ env.TIME_FORM }}
             - 机型：欧加真骁龙8Gen3 6.1 Android 14内核通用（基于一加12 Android 14 版官方OKI源码）
             - 特性：SukiSU Ultra + SUSFS + VFS + KPM
             - LZ4K支持：${{ github.event.inputs.lz4k_enable }}
