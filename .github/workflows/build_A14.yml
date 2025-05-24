@@ -252,22 +252,25 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "OPPO+OPlus+Realme-A14-build-${{ github.run_id }}"
-          name: "OPPO+OPlus+Realme A14 Build ${{ github.run_number }}"
+          tag_name: "OPPO+OPlus+Realme-A14-build-${{ github.event.repository.updated_at }}"
+          name: "OPPO+OPlus+Realme A14 ${FULL_VERSION}"
           body: |
-            ### 📱欧加真 Android 14 SukiSU-Ultra SM8650 通用内核 | 构建信息
+            ### 📱 欧加真 Android 14 SukiSU-Ultra SM8650 通用内核 | 构建信息
             - 内核版本号: ${FULL_VERSION}
             - 编译时间: ${{ github.event.repository.updated_at }}
-            - 机型：欧加真 Android 14 通用（基于一加12 Android 14 版官方OKI源码）
+            - 机型：欧加真骁龙8Gen3 6.1 Android 14内核通用（基于一加12 Android 14 版官方OKI源码）
             - 特性：SukiSU Ultra + SUSFS + VFS + KPM
             - LZ4K支持：${{ github.event.inputs.lz4k_enable }}
             - 风驰内核支持：${{ github.event.inputs.scx_enable }}
             - 推荐系统：ColorOS 14 / RealmeUI 5.0 (安卓15理论通用，未测试)
-            - SukiSU管理器：[SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra/releases)
-            - AnyKernel3文件使用 SukiSU Ultra管理器/KernelFlasher/TWRP 刷入
-            更新内容：
+            - SukiSU管理器下载：[SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra/releases)
+            ### ⏫️ 更新内容：
             - 更新SukiSU Ultra至最新版本
-            - （预留）
+            - (预留)
+            ### 📋 安装方法 | Installation Guide
+            1. 若你的手机已经安装了第三方Recovery（如TWRP)，可下载对应机型的AnyKernel刷机包后进入Recovery模式，通过Recovery刷入刷机包后重启设备
+            2. 若你的手机之前已有 root 权限，可在手机上安装KernelFlasher，在KernelFlasher中刷入AnyKernel刷机包并重启
+            3. 若你之前已刷入SukiSU Ultra内核，且SukiSU Ultra管理器已更新至最新版本，可在SukiSU Ultra管理器中直接刷入AnyKernel刷机包并重启
           draft: false
           prerelease: false
           files: |
