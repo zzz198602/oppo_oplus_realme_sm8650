@@ -60,11 +60,11 @@ jobs:
           #git config --global user.name "github-actions[bot]"
           #git config --global user.email "github-actions[bot]@users.noreply.github.com"
           sudo apt update && sudo apt upgrade -y
-          sudo apt-get install curl bison flex make binutils dwarves git clang-19 lld lld-19 lldb-19 pahole zip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev -y
+          sudo apt-get install curl bison flex make binutils dwarves git lld pahole zip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev -y
           sudo rm -rf ./llvm.sh
           sudo wget https://apt.llvm.org/llvm.sh
           sudo chmod +x llvm.sh
-          sudo sudo ./llvm.sh 19 all
+          sudo sudo ./llvm.sh 20 all
 
       - name: 初始化源码仓库
         run: |
@@ -185,7 +185,7 @@ jobs:
             cp -r ./sched_ext/* ./common/kernel/sched
           fi
           cd common
-          make -j$(nproc --all) LLVM=-19 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-Wno-error gki_defconfig all
+          make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-Wno-error gki_defconfig all
           echo "内核编译完成！"
          
       - name: 应用patch_linux并修补内核
