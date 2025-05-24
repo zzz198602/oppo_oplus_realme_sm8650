@@ -37,10 +37,16 @@ on:
         default: ''
 
 jobs:
-  build:
+  release:
+    needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      actions: read
+      
     steps:
-      - name: 获取变量
+      - name: 设置变量
         run: |
           if [[ ${{ github.event.inputs.kernel_suffix }} != '' ]]; then
             FULL_VERSION=${{ env.KERNEL_VERSION }}.57${{ github.event.inputs.kernel_suffix }}
@@ -57,17 +63,7 @@ jobs:
           echo "TIME_FORM=$TIME_FORM" >> $GITHUB_ENV
           TAG_HEAD="OPPO+OPlus+Realme-A14-build"
           echo "TAG_HEAD=$TAG_HEAD" >> $GITHUB_ENV
-          cd ..
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-      actions: read
-      
-    steps:
+          
       - name: 创建发布
         id: create_release
         uses: softprops/action-gh-release@v1
