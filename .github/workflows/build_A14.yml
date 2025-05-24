@@ -6,7 +6,7 @@ env:
   FEIL: 'oppo+oplus+realme'
   ANDROID_VERSION: 'android14'
   KERNEL_VERSION: '6.1'
-  KERNEL_NAME: '-android14-11-o-gca13bffobf09'
+  KERNEL_NAME: 'android14-11-o-gca13bffobf09'
   KERNELSU_VARIANT: 'SukiSU-Ultra'
   KERNELSU_BRANCH: 'susfs-dev'
 
@@ -167,7 +167,7 @@ jobs:
               sed -i "\$s|echo \"\\\$res\"|echo \"-${{ github.event.inputs.kernel_suffix }}\"|" "$f"
             done
           else
-            echo "当前内核版本后缀：${KERNEL_NAME}"
+            echo "当前内核版本后缀：${{ env.KERNEL_NAME }}"
             for f in ./common/scripts/setlocalversion; do
               sed -i "\$s|echo \"\\\$res\"|echo \"-${{ env.KERNEL_NAME }}\"|" "$f"
             done
@@ -239,11 +239,11 @@ jobs:
       - name: 设置环境变量
         run: |
           if [[ ${{ github.event.inputs.kernel_suffix }} != '' ]]; then
-            FULL_VERSION=${{ env.KERNEL_VERSION }}.57${{ github.event.inputs.kernel_suffix }}
+            FULL_VERSION=${{ env.KERNEL_VERSION }}.57$-{{ github.event.inputs.kernel_suffix }}
             echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
             export FULL_VERSION=$FULL_VERSION
           else
-            FULL_VERSION=${{ env.KERNEL_VERSION }}.57${{ env.KERNEL_NAME }}
+            FULL_VERSION=${{ env.KERNEL_VERSION }}.57$-{{ env.KERNEL_NAME }}
             echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
             export FULL_VERSION=$FULL_VERSION
           fi
