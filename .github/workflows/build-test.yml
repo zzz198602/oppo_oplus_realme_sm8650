@@ -43,11 +43,11 @@ jobs:
       - name: 获取变量
         run: |
           if [[ ${{ github.event.inputs.kernel_suffix }} != '' ]]; then
-            FULL_VERSION=${KERNEL_VERSION}.57${{ github.event.inputs.kernel_suffix }}
+            FULL_VERSION=${{ env.KERNEL_VERSION }}.57${{ github.event.inputs.kernel_suffix }}
             echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
             export FULL_VERSION=$FULL_VERSION
           else
-            FULL_VERSION=${KERNEL_VERSION}.57${KERNEL_NAME}
+            FULL_VERSION=${{ env.KERNEL_VERSION }}.57${{ env.KERNEL_NAME }}
             echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
             export FULL_VERSION=$FULL_VERSION
           fi
@@ -55,6 +55,8 @@ jobs:
           TIME_FORM="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
           echo "TIME=$TIME" >> $GITHUB_ENV
           echo "TIME_FORM=$TIME_FORM" >> $GITHUB_ENV
+          TAG_HEAD="OPPO+OPlus+Realme-A14-build"
+          echo "TAG_HEAD=$TAG_HEAD" >> $GITHUB_ENV
           cd ..
 
   release:
@@ -70,8 +72,8 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "OPPO+OPlus+Realme-A14-build-${TIME}"
-          name: "OPPO+OPlus+Realme A14 ${FULL_VERSION}"
+          tag_name: "${{ env.TAG_HEAD }}-${{ env.TIME }}"
+          name: "${{ env.TAG_HEAD }}-${{ env.FULL_VERSION }}"
           body: |
             ### 📱 欧加真 Android 14 SukiSU-Ultra SM8650 通用内核 | 构建信息
             - 内核版本号: ${{ env.FULL_VERSION }}
