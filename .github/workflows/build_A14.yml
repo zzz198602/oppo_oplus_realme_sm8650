@@ -83,7 +83,7 @@ jobs:
         run: |
           cd kernel_workspace
           #if [[ "${{ env.KERNELSU_VARIANT }}" == "SukiSU-Ultra" ]]; then
-          #  echo "BRANCH=-s susfs-dev" >> $GITHUB_ENV
+          #  echo "BRANCH='-s susfs-dev'" >> $GITHUB_ENV
           #fi
           curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/refs/heads/main/kernel/setup.sh" | bash -s susfs-dev
           cd ./KernelSU
@@ -171,7 +171,7 @@ jobs:
           else
             echo "当前内核版本后缀：${KERNEL_NAME}"
             for f in ./common/scripts/setlocalversion; do
-              sed -i "\$s|echo \"\\\$res\"|echo \"-${KERNEL_NAME}\"|" "$f"
+              sed -i "\$s|echo \"\\\$res\"|echo \"-${{ env.KERNEL_NAME }}\"|" "$f"
             done
           fi
            
@@ -212,21 +212,10 @@ jobs:
             wget https://raw.githubusercontent.com/Suxiaoqinx/kernel_manifest_OnePlus_Sukisu_Ultra/main/zram.zip
           fi
           if [[ ${{ github.event.inputs.kernel_suffix }} != '' ]]; then
-            zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${KERNEL_VERSION}_A14${{ github.event.inputs.kernel_suffix }}.zip ./*
-            FULL_VERSION=${KERNEL_VERSION}.57${{ github.event.inputs.kernel_suffix }}
-            echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
-            export FULL_VERSION=$FULL_VERSION
+            zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${{ env.KERNEL_VERSION }}_A14${{ github.event.inputs.kernel_suffix }}.zip ./*
           else
-            zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${KERNEL_VERSION}_A14${KERNEL_NAME}.zip ./*
-            FULL_VERSION=${KERNEL_VERSION}.57${KERNEL_NAME}
-            echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
-            export FULL_VERSION=$FULL_VERSION
+            zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${{ env.KERNEL_VERSION }}_A14${{ env.KERNEL_NAME }}.zip ./*
           fi
-          TIME="$(TZ='Asia/Shanghai' date +'%y%m%d%H%M%S')"
-          TIME_FORM="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
-          echo "TIME=$TIME" >> $GITHUB_ENV
-          echo "TIME_FORM=$TIME_FORM" >> $GITHUB_ENV
-          cd ..
 
       - name: 上传 ZIP 工件
         uses: actions/upload-artifact@v4
@@ -248,17 +237,35 @@ jobs:
         with:
           name: Kernel_ZIP_Artifacts
           path: ./release_zips
+
+      - name: 设置环境变量
+        run: |
+          if [[ ${{ github.event.inputs.kernel_suffix }} != '' ]]; then
+            FULL_VERSION=${{ env.KERNEL_VERSION }}.57${{ github.event.inputs.kernel_suffix }}
+            echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
+            export FULL_VERSION=$FULL_VERSION
+          else
+            FULL_VERSION=${{ env.KERNEL_VERSION }}.57${{ env.KERNEL_NAME }}
+            echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
+            export FULL_VERSION=$FULL_VERSION
+          fi
+          TIME="$(TZ='Asia/Shanghai' date +'%y%m%d%H%M%S')"
+          TIME_FORM="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
+          echo "TIME=$TIME" >> $GITHUB_ENV
+          echo "TIME_FORM=$TIME_FORM" >> $GITHUB_ENV
+          TAG_HEAD="OPPO+OPlus+Realme-A14-build"
+          echo "TAG_HEAD=$TAG_HEAD" >> $GITHUB_ENV
          
       - name: 创建发布
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "OPPO+OPlus+Realme-A14-build-$TIME"
-          name: "OPPO+OPlus+Realme A14 $FULL_VERSION"
+          tag_name: "${{ env.TAG_HEAD }}-${{ env.TIME }}"
+          name: "${{ env.TAG_HEAD }}-${{ env.FULL_VERSION }}"
           body: |
             ### 📱 欧加真 Android 14 SukiSU-Ultra SM8650 通用内核 | 构建信息
-            - 内核版本号: ${FULL_VERSION}
-            - 编译时间: ${TIME_FORM}
+            - 内核版本号: ${{ env.FULL_VERSION }}
+            - 编译时间: ${{ env.TIME_FORM }}
             - 机型：欧加真骁龙8Gen3 6.1 Android 14内核通用（基于一加12 Android 14 版官方OKI源码）
             - 特性：SukiSU Ultra + SUSFS + VFS + KPM
             - LZ4K支持：${{ github.event.inputs.lz4k_enable }}
