@@ -83,7 +83,7 @@ jobs:
         run: |
           cd kernel_workspace
           if [[ "${{ env.KERNELSU_VARIANT }}" == "SukiSU-Ultra" ]]; then
-            echo "BRANCH=-s "${{ env.KERNELSU_BRANCH }}" >> $GITHUB_ENV
+            echo "BRANCH=-s susfs-dev" >> $GITHUB_ENV
           fi
           curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/refs/heads/main/kernel/setup.sh" | bash ${{ env.BRANCH }}
           cd ./KernelSU
