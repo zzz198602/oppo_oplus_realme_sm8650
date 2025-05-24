@@ -49,6 +49,7 @@ jobs:
           echo "KSUVER=$KSU_VERSION" >> $GITHUB_OUTPUT
           export KSUVER=$KSU_VERSION
   release:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
