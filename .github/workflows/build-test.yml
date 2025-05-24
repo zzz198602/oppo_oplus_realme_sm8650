@@ -39,15 +39,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      ksuver: ${{ steps.ksu_version.outputs.ksuver }}
+      KSUVER: ${{ steps.ksu_version.outputs.KSUVER }}
     steps:
       - name: 添加 SukiSU-Ultra 版本号
         id: ksu_version
         run: |
           KSU_VERSION="114514"
           echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
-          echo "ksuver=$KSU_VERSION" >> $GITHUB_OUTPUT
-          export KSU_VERSION=$KSU_VERSION
+          echo "KSUVER=$KSU_VERSION" >> $GITHUB_OUTPUT
+          export KSUVER=$KSU_VERSION
   release:
     runs-on: ubuntu-latest
     permissions:
