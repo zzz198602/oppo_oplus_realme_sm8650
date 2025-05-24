@@ -222,6 +222,10 @@ jobs:
             echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
             export FULL_VERSION=$FULL_VERSION
           fi
+          TIME="$(TZ='Asia/Shanghai' date +'%y%m%d%H%M%S')"
+          TIME_FORM="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
+          echo "TIME=$TIME" >> $GITHUB_ENV
+          echo "TIME_FORM=$TIME_FORM" >> $GITHUB_ENV
           cd ..
 
       - name: 上传 ZIP 工件
@@ -249,12 +253,12 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "OPPO+OPlus+Realme-A14-build-${{ github.event.repository.updated_at }}"
+          tag_name: "OPPO+OPlus+Realme-A14-build-${{ env.TIME }}"
           name: "OPPO+OPlus+Realme A14 ${FULL_VERSION}"
           body: |
             ### 📱 欧加真 Android 14 SukiSU-Ultra SM8650 通用内核 | 构建信息
             - 内核版本号: ${FULL_VERSION}
-            - 编译时间: ${{ github.event.repository.updated_at }}
+            - 编译时间: ${{ env.TIME_FORM }}
             - 机型：欧加真骁龙8Gen3 6.1 Android 14内核通用（基于一加12 Android 14 版官方OKI源码）
             - 特性：SukiSU Ultra + SUSFS + VFS + KPM
             - LZ4K支持：${{ github.event.inputs.lz4k_enable }}
@@ -262,7 +266,7 @@ jobs:
             - 推荐系统：ColorOS 14 / RealmeUI 5.0 (安卓15理论通用，未测试)
             - SukiSU管理器下载：[SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra/releases)
             ### ⏫️ 更新内容：
-            - 更新SukiSU Ultra至最新版本
+            - 更新SukiSU Ultra至最新版本（${{ env.KSUVER }}）
             - (预留)
             ### 📋 安装方法 | Installation Guide
             1. 若你的手机已经安装了第三方Recovery（如TWRP)，可下载对应机型的AnyKernel刷机包后进入Recovery模式，通过Recovery刷入刷机包后重启设备
