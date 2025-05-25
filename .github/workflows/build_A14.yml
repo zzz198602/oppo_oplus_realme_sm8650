@@ -33,7 +33,7 @@ on:
           - 'true'
           - 'false'
       kernel_suffix:
-        description: '内核后缀(可留空默认,不要加连字符)'
+        description: '内核后缀(留空默认,开头别加连字符)'
         required: false
         type: string
         default: ''
