@@ -14,6 +14,20 @@
 - 提供 Github Action 在线编译/shell本地编译双版本脚本。
 ##### 
 由于个人精力有限，本项目暂时仅提供 SukiSU Ultra 版 KernelSU 补丁，其余版本 KernelSU 支持将在后续更新 ~~（在咕了在咕了）~~。
+## 计划实现功能
+- [x] 欧加真 SM8650 通用A14 OKI内核（基于一加12 6.1.57 A14官方内核源码）
+##### 
+- [ ] 欧加真 SM8650 通用A15 OKI内核（基于一加12 6.1.75 A15官方内核源码）
+##### 
+- [ ] 欧加真 SM8650 通用A14/15 GKI内核（移植一加f2fs源码，实现免清data刷入）
+##### 
+- [ ] 原版KernelSU/KernelSU Next支持
+##### 
+- [ ] LXC/Docker 功能支持
+##### 
+- [ ] Wireguard/BBR 支持
+##### 
+- [ ] 将多版本内核编译脚本整合为一个脚本
 ## 鸣谢
 - Sukisu Ultra：[SukiSU-Ultra/SukiSU-Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra)
 - susfs4ksu：[ShirkNeko/susfs4ksu](https://github.com/ShirkNeko/susfs4ksu)
