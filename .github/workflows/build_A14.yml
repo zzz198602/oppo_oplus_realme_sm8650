@@ -268,15 +268,16 @@ jobs:
             - 特性：SukiSU Ultra + SUSFS + VFS + KPM
             - LZ4K支持：${{ github.event.inputs.lz4k_enable }}
             - 风驰内核支持：${{ github.event.inputs.scx_enable }}
-            - 推荐系统：ColorOS 14 / RealmeUI 5.0 (安卓15理论通用，未测试)
+            - 推荐系统：ColorOS 14 / RealmeUI 5.0
             - SukiSU管理器下载：[SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra/releases)
             ### ⏫️ 更新内容：
             - 更新SukiSU Ultra至最新版本（${{ needs.build.outputs.ksuver }}）
             - (预留)
             ### 📋 安装方法 | Installation Guide
             1. 若你的手机已经安装了第三方Recovery（如TWRP)，可下载对应机型的AnyKernel刷机包后进入Recovery模式，通过Recovery刷入刷机包后重启设备
-            2. 若你的手机之前已有 root 权限，可在手机上安装KernelFlasher，在KernelFlasher中刷入AnyKernel刷机包并重启
+            2. 若你的手机之前已有 root 权限，可在手机上安装[HorizonKernelFlasher](https://github.com/libxzr/HorizonKernelFlasher/releases)，在HorizonKernelFlasher中刷入AnyKernel刷机包并重启
             3. 若你之前已刷入SukiSU Ultra内核，且SukiSU Ultra管理器已更新至最新版本，可在SukiSU Ultra管理器中直接刷入AnyKernel刷机包并重启
+            ※※※刷写内核有风险，为防止出现意外导致手机变砖，在刷入内核前请务必用[KernelFlasher](https://github.com/capntrips/KernelFlasher)等软件备份boot等关键启动分区!※※※
           draft: false
           prerelease: false
           files: |
