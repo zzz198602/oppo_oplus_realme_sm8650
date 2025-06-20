@@ -15,8 +15,8 @@ CUSTOM_SUFFIX=${CUSTOM_SUFFIX:-android14-11-o-gca13bffobf09}
 USE_PATCH_LINUX=${USE_PATCH_LINUX:-y}
 read -p "是否应用 lz4kd 补丁？(y/n，默认：y): " APPLY_LZ4KD
 APPLY_LZ4KD=${APPLY_LZ4KD:-y}
-read -p "是否安装风驰内核驱动？(y/n，默认：y): " APPLY_SCX
-APPLY_SCX=${APPLY_SCX:-y}
+read -p "是否安装风驰内核驱动（未完成）？(y/n，默认：n): " APPLY_SCX
+APPLY_SCX=${APPLY_SCX:-n}
 echo
 echo "===== 配置信息 ====="
 echo "SoC 分支: $SOC_BRANCH"
