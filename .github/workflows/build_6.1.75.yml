@@ -25,10 +25,10 @@ on:
           - 'true'
           - 'false'
       scx_enable:
-        description: '是否安装风驰内核驱动'
+        description: '是否安装风驰内核驱动(未完成)'
         required: true
         type: choice
-        default: 'true'
+        default: 'false'
         options:
           - 'true'
           - 'false'
