@@ -81,14 +81,14 @@ git clone https://github.com/ShirkNeko/SukiSU_patch.git
 # ===== 应用 SUSFS 补丁 =====
 echo ">>> 应用 SUSFS&hook 补丁..."
 cp ./susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch ./common/
-cp ./SukiSU_patch/hooks/new_hooks.patch ./common/
+cp ./SukiSU_patch/hooks/syscall_hooks.patch ./common/
 cp ./susfs4ksu/kernel_patches/fs/* ./common/fs/
 cp ./susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
 cd ./common
 patch -p1 < 50_add_susfs_in_gki-android14-6.1.patch || true
 cp ../SukiSU_patch/69_hide_stuff.patch ./
 patch -p1 -F 3 < 69_hide_stuff.patch
-patch -p1 < new_hooks.patch
+patch -p1 < syscall_hooks.patch
 cd ../
 
 # ===== 选择应用 LZ4KD 补丁 =====
@@ -176,7 +176,7 @@ OUT_DIR="$WORKDIR/kernel_workspace/common/out/arch/arm64/boot"
 if [[ "$USE_PATCH_LINUX" == "y" || "$USE_PATCH_LINUX" == "Y" ]]; then
   echo ">>> 使用 patch_linux 工具处理输出..."
   cd "$OUT_DIR"
-  wget https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.11-beta/patch_linux
+  wget https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.12.0/patch_linux
   chmod +x patch_linux
   ./patch_linux
   rm -f Image
