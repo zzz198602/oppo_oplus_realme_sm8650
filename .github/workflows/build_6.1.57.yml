@@ -8,7 +8,7 @@ env:
   KERNEL_VERSION: '6.1'
   KERNEL_NAME: 'android14-11-o-gca13bffobf09'
   KERNELSU_VARIANT: 'SukiSU-Ultra'
-  KERNELSU_BRANCH: 'susfs-dev'
+  KERNELSU_BRANCH: 'susfs-main'
 
 on:
   workflow_dispatch:
@@ -25,10 +25,10 @@ on:
           - 'true'
           - 'false'
       scx_enable:
-        description: '是否安装风驰内核驱动'
+        description: '是否安装风驰内核驱动(未完成)'
         required: true
         type: choice
-        default: 'true'
+        default: 'false'
         options:
           - 'true'
           - 'false'
@@ -81,7 +81,7 @@ jobs:
         run: |
           cd kernel_workspace
           #if [[ "${{ env.KERNELSU_VARIANT }}" == "SukiSU-Ultra" ]]; then
-          #  echo "BRANCH='-s susfs-dev'" >> $GITHUB_ENV
+          #  echo "BRANCH='-s susfs-main'" >> $GITHUB_ENV
           #fi
           curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/refs/heads/main/kernel/setup.sh" | bash -s susfs-main
           cd ./KernelSU
