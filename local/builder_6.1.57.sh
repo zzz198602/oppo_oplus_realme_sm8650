@@ -203,7 +203,7 @@ cd "$WORKDIR/kernel_workspace/AnyKernel3"
 # ===== 如果启用 lz4kd，则下载 zram.zip 并放入当前目录 =====
 if [[ "$APPLY_LZ4KD" == "y" || "$APPLY_LZ4KD" == "Y" ]]; then
   echo ">>> 检测到启用了 lz4kd，准备下载 zram.zip..."
-  wget https://raw.githubusercontent.com/Suxiaoqinx/kernel_manifest_OnePlus_Sukisu_Ultra/main/zram.zip
+  wget https://raw.githubusercontent.com/cctv18/oppo_oplus_realme_sm8650/refs/heads/main/zram.zip
   echo ">>> 已下载 zram.zip 并放入打包目录"
 fi
 
