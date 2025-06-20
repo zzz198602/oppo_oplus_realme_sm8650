@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
 # ===== 设置自定义参数 =====
-echo "===== 欧加真SM8650通用A14 OKI内核本地编译脚本 By Coolapk@cctv18 ====="
+echo "===== 欧加真SM8650通用6.1.57 A14 OKI内核本地编译脚本 By Coolapk@cctv18 ====="
 echo ">>> 读取用户配置..."
 SOC_BRANCH=${SOC_BRANCH:-sm8650}
 MANIFEST=${MANIFEST:-oppo+oplus+realme}
