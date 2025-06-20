@@ -243,7 +243,7 @@ jobs:
             echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
             export FULL_VERSION=$FULL_VERSION
           else
-            FULL_VERSION=${{ format('{0}.75-{1}', env.KERNEL_VERSION, env.KERNEL_NAME) }}
+            FULL_VERSION=${{ format('{0}.118-{1}', env.KERNEL_VERSION, env.KERNEL_NAME) }}
             echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_ENV
             export FULL_VERSION=$FULL_VERSION
           fi
