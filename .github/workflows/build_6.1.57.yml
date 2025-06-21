@@ -20,7 +20,7 @@ on:
         description: '是否安装 LZ4KD 补丁'
         required: true
         type: choice
-        default: 'true'
+        default: 'false'
         options:
           - 'true'
           - 'false'
