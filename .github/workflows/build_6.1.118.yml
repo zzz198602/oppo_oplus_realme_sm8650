@@ -241,6 +241,7 @@ jobs:
         run: |
           if [[ "${{ github.event.inputs.ssg_enable }}" == "true" ]]; then
             echo "正在启用三星SSG IO调度器…"
+            cd kernel_workspace
             echo "CONFIG_MQ_IOSCHED_SSG=y" >> ./common/arch/arm64/configs/gki_defconfig
             echo "CONFIG_MQ_IOSCHED_SSG_CGROUP=y" >> ./common/arch/arm64/configs/gki_defconfig
           fi
