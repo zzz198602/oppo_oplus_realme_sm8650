@@ -14,32 +14,29 @@
 - 提供 Github Action 在线编译/shell本地编译双版本脚本。
 ##### 
 由于个人精力有限，本项目暂时仅提供 SukiSU Ultra 版 KernelSU 补丁，其余版本 KernelSU 支持将在后续更新 ~~（在咕了在咕了）~~。
-## 计划实现功能
+## 已实现：
 - [x] 欧加真 SM8650 通用A14 OKI内核（基于一加12 6.1.57 A14官方内核源码，适用于ColorOS 14/RealmeUI 5.0）
 ##### 
 - [x] 欧加真 SM8650 通用A15 OKI内核（基于一加12 6.1.75/6.1.118 A15官方内核源码，适用于ColorOS 15/RealmeUI 6.0）
 ##### 
-- [x] lz4 1.10.0算法更新&优化(来自@ferstar, 移植@Xiaomichael)
+- [x] lz4 1.10.0 & zstd 1.5.7 算法更新&优化补丁(来自@ferstar, 移植@Xiaomichael)
 ##### 
-- [x] zstd 1.5.7更新&优化
+- [x] 可选加入 BBR/Brutal 及一系列 tcp 拥塞控制算法
 ##### 
-- [x] 可选加入 BBR 及一系列拥塞控制算法
-##### 
-- 增强功能：
+- [x] 三星SSG IO调度器移植
+## 待实现：
 - [ ] 为非官方支持机型移植完整风驰内核支持（正在补全中）
 - [ ] 编译优化（ccache缓存，编译配置选项改进等）
-- [ ] brutal 拥塞控制算法支持 ~~（待定，未确定功能必要性）~~
 - [ ] zram内置化，无需外置zram.ko挂载 ~~（有了新版 lz4&zstd 补丁真的还有必要吗）~~
-- [ ] 三星SSG IO调度器移植
 - [ ] LXC/Docker 功能支持
 - [ ] 一加系列新版调度器移植（schedhorizon等）
+- [ ] 欧加真 SM8650 通用A14/15 GKI内核（移植一加f2fs源码，实现免清data刷入）
+- [ ] 原版KernelSU/KernelSU Next支持
+- [ ] 将多版本内核编译脚本整合为一个脚本
 - 更多优化与特性移植……
 ##### 
-- [ ] 欧加真 SM8650 通用A14/15 GKI内核（移植一加f2fs源码，实现免清data刷入）
 ##### 
-- [ ] 原版KernelSU/KernelSU Next支持
 ##### 
-- [ ] 将多版本内核编译脚本整合为一个脚本
 ## 鸣谢
 - Sukisu Ultra：[SukiSU-Ultra/SukiSU-Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra)
 - susfs4ksu：[ShirkNeko/susfs4ksu](https://github.com/ShirkNeko/susfs4ksu)
