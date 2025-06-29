@@ -41,6 +41,14 @@ on:
           - 'false'
           - 'true'
           - 'default'
+      ssg_enable:
+        description: '是否启用三星SSG IO调度器'
+        required: true
+        type: choice
+        default: 'true'
+        options:
+          - 'true'
+          - 'false'
       scx_enable:
         description: '是否安装风驰内核驱动(未完成)'
         required: true
@@ -229,6 +237,14 @@ jobs:
             fi
           fi
 
+      - name: 启用三星SSG IO调度器
+        run: |
+          if [[ "${{ github.event.inputs.ssg_enable }}" == "true" ]]; then
+            echo "正在启用三星SSG IO调度器…"
+            echo "CONFIG_MQ_IOSCHED_SSG=y" >> ./common/arch/arm64/configs/gki_defconfig
+            echo "CONFIG_MQ_IOSCHED_SSG_CGROUP=y" >> ./common/arch/arm64/configs/gki_defconfig
+          fi
+
       - name: 添加制作名称
         run: |
           cd kernel_workspace
@@ -340,6 +356,8 @@ jobs:
             - 特性：SukiSU Ultra + SUSFS + VFS + KPM
             - LZ4KD支持：${{ github.event.inputs.lz4k_enable }}
             - LZ4支持：${{ github.event.inputs.lz4_enable }}
+            - BBR/Brutal 等拥塞控制算法支持：${{ github.event.inputs.bbr_enable }}
+            - 三星SSG IO调度器支持：${{ github.event.inputs.ssg_enable }}
             - 风驰内核支持：${{ github.event.inputs.scx_enable }}
             - 推荐系统：ColorOS 14 / RealmeUI 5.0
             - SukiSU管理器下载：[SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra/releases)

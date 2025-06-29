@@ -19,6 +19,8 @@ read -p "是否应用 lz4kd 补丁？(可能与 lz4&zstd 补丁冲突，建议�
 APPLY_LZ4KD=${APPLY_LZ4KD:-y}
 read -p "是否添加 BBR 等一系列拥塞控制算法？(y添加/n禁用/d默认，默认：n): " APPLY_BBR
 APPLY_BBR=${APPLY_BBR:-n}
+read -p "是否启用三星SSG IO调度器？(y/n，默认：y): " APPLY_SSG
+APPLY_SSG=${APPLY_SSG:-y}
 read -p "是否安装风驰内核驱动（未完成）？(y/n，默认：n): " APPLY_SCX
 APPLY_SCX=${APPLY_SCX:-n}
 echo
@@ -30,6 +32,7 @@ echo "使用 patch_linux: $USE_PATCH_LINUX"
 echo "应用 lz4&zstd 补丁: $APPLY_LZ4"
 echo "应用 lz4kd 补丁: $APPLY_LZ4KD"
 echo "应用 BBR 等算法: $APPLY_BBR"
+echo "启用三星SSG IO调度器: $APPLY_SSG"
 echo "应用风驰内核驱动: $APPLY_SCX"
 echo "===================="
 echo
@@ -128,24 +131,6 @@ else
   cd "$WORKDIR/kernel_workspace"
 fi
 
-# ===== 添加 BBR 等一系列拥塞控制算法 =====
-if [[ "$APPLY_BBR" == "y" || "$APPLY_BBR" == "Y" || "$APPLY_BBR" == "d" || "$APPLY_BBR" == "D" ]]; then
-  echo ">>> 正在添加 BBR 等一系列拥塞控制算法..."
-  echo "CONFIG_TCP_CONG_ADVANCED=y" >> "$DEFCONFIG_FILE"
-  echo "CONFIG_TCP_CONG_BBR=y" >> "$DEFCONFIG_FILE"
-  echo "CONFIG_TCP_CONG_CUBIC=y" >> "$DEFCONFIG_FILE"
-  echo "CONFIG_TCP_CONG_VEGAS=y" >> "$DEFCONFIG_FILE"
-  echo "CONFIG_TCP_CONG_NV=y" >> "$DEFCONFIG_FILE"
-  echo "CONFIG_TCP_CONG_WESTWOOD=y" >> "$DEFCONFIG_FILE"
-  echo "CONFIG_TCP_CONG_HTCP=y" >> "$DEFCONFIG_FILE"
-  echo "CONFIG_TCP_CONG_BRUTAL=y" >> "$DEFCONFIG_FILE"
-  if [[ "$APPLY_BBR" == "d" || "$APPLY_BBR" == "D" ]]; then
-    echo "CONFIG_DEFAULT_TCP_CONG=bbr" >> "$DEFCONFIG_FILE"
-  else
-    echo "CONFIG_DEFAULT_TCP_CONG=cubic" >> "$DEFCONFIG_FILE"
-  fi
-fi
-
 # ===== 添加 defconfig 配置项 =====
 echo ">>> 添加 defconfig 配置项..."
 DEFCONFIG_FILE=./common/arch/arm64/configs/gki_defconfig
@@ -187,6 +172,31 @@ CONFIG_CRYPTO_LZ4KD=y
 CONFIG_CRYPTO_842=y
 EOF
 
+fi
+
+# ===== 添加 BBR 等一系列拥塞控制算法 =====
+if [[ "$APPLY_BBR" == "y" || "$APPLY_BBR" == "Y" || "$APPLY_BBR" == "d" || "$APPLY_BBR" == "D" ]]; then
+  echo ">>> 正在添加 BBR 等一系列拥塞控制算法..."
+  echo "CONFIG_TCP_CONG_ADVANCED=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_TCP_CONG_BBR=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_TCP_CONG_CUBIC=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_TCP_CONG_VEGAS=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_TCP_CONG_NV=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_TCP_CONG_WESTWOOD=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_TCP_CONG_HTCP=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_TCP_CONG_BRUTAL=y" >> "$DEFCONFIG_FILE"
+  if [[ "$APPLY_BBR" == "d" || "$APPLY_BBR" == "D" ]]; then
+    echo "CONFIG_DEFAULT_TCP_CONG=bbr" >> "$DEFCONFIG_FILE"
+  else
+    echo "CONFIG_DEFAULT_TCP_CONG=cubic" >> "$DEFCONFIG_FILE"
+  fi
+fi
+
+# ===== 启用三星SSG IO调度器 =====
+if [[ "$APPLY_SSG" == "y" || "$APPLY_SSG" == "Y" ]]; then
+  echo ">>> 正在启用三星SSG IO调度器..."
+  echo "CONFIG_MQ_IOSCHED_SSG=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_MQ_IOSCHED_SSG_CGROUP=y" >> "$DEFCONFIG_FILE"
 fi
 
 # ===== 禁用 defconfig 检查 =====
