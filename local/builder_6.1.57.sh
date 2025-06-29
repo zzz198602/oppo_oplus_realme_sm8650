@@ -102,7 +102,7 @@ if [[ "$APPLY_LZ4" == "y" || "$APPLY_LZ4" == "Y" ]]; then
   cp ./oppo_oplus_realme_sm8650/zram_patch/lz4armv8.S ./common/lib
   cp ./oppo_oplus_realme_sm8650/zram_patch/002-zstd.patch ./common/
   cd "$WORKDIR/kernel_workspace/common"
-  patch -p1 < 001-lz4.patch || true
+  git apply -p1 < 001-lz4.patch || true
   patch -p1 < 002-zstd.patch || true
   cd "$WORKDIR/kernel_workspace"
 else
