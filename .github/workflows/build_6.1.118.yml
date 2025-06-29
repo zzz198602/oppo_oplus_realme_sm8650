@@ -99,36 +99,43 @@ jobs:
           export KSU_VERSION=$KSU_VERSION
           sed -i "s/DKSU_VERSION=12800/DKSU_VERSION=$KSU_VERSION/" kernel/Makefile
 
-      - name: 应用 SUSFS 修补程序 SukiSU-Ultra
+      - name: 应用 SukiSU-Ultra & SUSFS 补丁
         run: |
           cd kernel_workspace
           git clone https://github.com/ShirkNeko/susfs4ksu.git -b gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}
           git clone https://github.com/ShirkNeko/SukiSU_patch.git
-          git clone https://github.com/Xiaomichael/kernel_patches.git
           cp ./susfs4ksu/kernel_patches/50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch ./common/
           cp ./susfs4ksu/kernel_patches/fs/* ./common/fs/
           cp ./susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
           cp ./SukiSU_patch/hooks/syscall_hooks.patch ./common/
-          cp ./kernel_patches/001-lz4.patch ./common/
-          cp ./kernel_patches/lz4armv8.S ./common/lib
-          cp ./kernel_patches/002-zstd.patch ./common/
           cd ./common
           patch -p1 < 50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch || true
-          patch -p1 < syscall_hooks.patch
+          patch -p1 < syscall_hooks.patch || true
+          
+      - name: 应用lz4 1.10.0 & zstd 1.5.7补丁
+        run: |
           if [ "${{ github.event.inputs.lz4_enable }}" == "true" ]; then
-            git apply -p1 < 001-lz4.patch || true
+            echo "正在添加lz4 1.10.0 & zstd 1.5.7补丁…"
+            cd kernel_workspace
+            git clone https://github.com/cctv18/oppo_oplus_realme_sm8650.git
+            cp ./oppo_oplus_realme_sm8650/zram_patch/001-lz4.patch ./common/
+            cp ./oppo_oplus_realme_sm8650/zram_patch/lz4armv8.S ./common/lib
+            cp ./oppo_oplus_realme_sm8650/zram_patch/002-zstd.patch ./common/
+            cd ./common
+            patch -p1 < 001-lz4.patch || true
             patch -p1 < 002-zstd.patch || true
           fi
 
-      - name: 应用 Hide Stuff 修补程序
+      - name: 应用 Hide Stuff 补丁
         run: |
           cd kernel_workspace/common
           cp ../SukiSU_patch/69_hide_stuff.patch ./
           patch -p1 < 69_hide_stuff.patch
 
-      - name: 应用 lz4k 补丁
+      - name: 应用 lz4kd 补丁
         run: |
           if [[ "${{ github.event.inputs.lz4k_enable }}" == "true" ]]; then
+            echo "正在添加lz4kd补丁…"
             cd kernel_workspace/common
             cp -r ../SukiSU_patch/other/zram/lz4k/include/linux/* ./include/linux/
             cp -r ../SukiSU_patch/other/zram/lz4k/lib/* ./lib
@@ -137,7 +144,7 @@ jobs:
             patch -p1 -F 3 < lz4kd.patch || true
           fi
           
-      - name: 添加 SUSFS 配置设置
+      - name: 添加 SukiSU-Ultra & SUSFS 配置项
         run: |
           cd kernel_workspace
           echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
