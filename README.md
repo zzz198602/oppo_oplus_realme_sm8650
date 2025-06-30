@@ -19,6 +19,8 @@
 ##### 
 - [x] 欧加真 SM8650 通用A15 OKI内核（基于一加12 6.1.75/6.1.118 A15官方内核源码，适用于ColorOS 15/RealmeUI 6.0）
 ##### 
+- [x] 可选manual/kprobes钩子模式：kprobes钩子模式下支持切换至sus su模式（类似面具的su实现，用于兼容一些程序的运行）
+##### 
 - [x] lz4 1.10.0 & zstd 1.5.7 算法更新&优化补丁(来自@ferstar, 移植@Xiaomichael)
 ##### 
 - [x] 可选加入 BBR/Brutal 及一系列 tcp 拥塞控制算法
