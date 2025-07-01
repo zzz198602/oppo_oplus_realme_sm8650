@@ -164,6 +164,7 @@ if [[ "$APPLY_KPROBES" == "y" || "$APPLY_KPROBES" == "Y" ]]; then
   echo "CONFIG_KSU_KPROBES_HOOK=y" >> "$DEFCONFIG_FILE"
 else
   echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$DEFCONFIG_FILE"
+  echo "CONFIG_KSU_SUSFS_SUS_SU=n" >>  "$DEFCONFIG_FILE"
 fi
 
 # 仅在启用了 KPM 时添加 KPM 支持
