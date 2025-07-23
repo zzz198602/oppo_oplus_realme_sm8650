@@ -100,8 +100,6 @@ jobs:
           sudo apt-mark hold man-db
           sudo rm -rf /var/lib/man-db/auto-update
           sudo apt update
-          #sudo apt-get install --no-install-recommends aria2 curl bison flex make binutils git lld pahole zip unzip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev -y
-          #sudo apt-get install dwarves pahole
           sudo apt-get install -y --no-install-recommends \
             curl bison flex make binutils git perl gcc python3 \
             python-is-python3 bc libssl-dev libelf-dev \
