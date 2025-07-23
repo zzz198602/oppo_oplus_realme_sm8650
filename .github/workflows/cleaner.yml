@@ -37,7 +37,7 @@ jobs:
             
             // 删除匹配的缓存
             for (const cache of caches.data.actions_caches) {
-              if (cache.key.startsWith('ccache-') {
+              if (cache.key.startsWith('ccache-')) {
                 console.log(`删除缓存: ${cache.key}`);
                 await github.rest.actions.deleteActionsCacheById({
                   owner,
