@@ -24,11 +24,11 @@ on:
         options:
           - 'manual'
           - 'kprobes'
-      kpm:
-        description: '是否开启kpm'
+      kpm_enable:
+        description: '是否开启kpm(可能轻微增加耗电，不需要可关闭)'
         required: true
         type: choice
-        default: 'false'
+        default: 'true'
         options:
           - 'true'
           - 'false'
@@ -295,7 +295,7 @@ jobs:
         run: |
           cd kernel_workspace
           echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
-          if [ "${{ github.event.inputs.kpm }}" == "true" ]; then
+          if [ "${{ github.event.inputs.kpm_enable }}" == "true" ]; then
             echo "CONFIG_KPM=y" >> ./common/arch/arm64/configs/gki_defconfig
           fi
           if [ "${{ github.event.inputs.hook_method }}" == "kprobes" ]; then
@@ -475,7 +475,7 @@ jobs:
           df -h
          
       - name: 应用patch_linux并修补内核
-        if: ${{ github.event.inputs.kpm == 'true' }}
+        if: ${{ github.event.inputs.kpm_enable == 'true' }}
         run: |
           cd kernel_workspace/common/out/arch/arm64/boot
           curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.12.0/patch_linux
