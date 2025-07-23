@@ -19,8 +19,8 @@ read -p "是否应用 lz4 1.10.0 & zstd 1.5.7 补丁？(y/n，默认：y): " APP
 APPLY_LZ4=${APPLY_LZ4:-y}
 read -p "是否应用 lz4kd 补丁？(y/n，默认：y): " APPLY_LZ4KD
 APPLY_LZ4KD=${APPLY_LZ4KD:-y}
-read -p "是否启用代理性能优化配置？(y/n，默认：y): " APPLY_BETTERPROXY
-APPLY_BETTERPROXY=${APPLY_BETTERPROXY:-y}
+read -p "是否启用网络功能增强优化配置？(y/n，默认：y): " APPLY_BETTERNET
+APPLY_BETTERNET=${APPLY_BETTERNET:-y}
 read -p "是否添加 BBR 等一系列拥塞控制算法？(y添加/n禁用/d默认，默认：n): " APPLY_BBR
 APPLY_BBR=${APPLY_BBR:-n}
 read -p "是否启用三星SSG IO调度器？(y/n，默认：y): " APPLY_SSG
@@ -36,7 +36,7 @@ echo "使用 patch_linux: $USE_PATCH_LINUX"
 echo "使用 kprobes钩子: $APPLY_KPROBES"
 echo "应用 lz4&zstd 补丁: $APPLY_LZ4"
 echo "应用 lz4kd 补丁: $APPLY_LZ4KD"
-echo "应用 代理性能优化配置: $APPLY_BETTERPROXY"
+echo "应用网络功能增强优化配置: $APPLY_BETTERNET"
 echo "应用 BBR 等算法: $APPLY_BBR"
 echo "启用三星SSG IO调度器: $APPLY_SSG"
 echo "应用风驰内核驱动: $APPLY_SCX"
@@ -187,9 +187,9 @@ EOF
 
 fi
 
-# ===== 启用代理性能优化配置 =====
-if [[ "$APPLY_BETTERPROXY" == "y" || "$APPLY_BETTERPROXY" == "Y" ]]; then
-  echo ">>> 正在启用代理性能优化配置..."
+# ===== 启用网络功能增强优化配置 =====
+if [[ "$APPLY_BETTERNET" == "y" || "$APPLY_BETTERNET" == "Y" ]]; then
+  echo ">>> 正在启用网络功能增强优化配置..."
   echo "CONFIG_BPF_STREAM_PARSER=y" >> "$DEFCONFIG_FILE"
   echo "CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=y" >> "$DEFCONFIG_FILE"
   echo "CONFIG_NETFILTER_XT_SET=y" >> "$DEFCONFIG_FILE"
