@@ -30,7 +30,7 @@ jobs:
       
       - name: 按保留数量清理工作流
         if: ${{ github.event.inputs.clean_mode == 'amount' }}
-        uses: igorjs/gh-actions-clean-workflow@main
+        uses: igorjs/gh-actions-clean-workflow@v6
         with:
           runs_to_keep: ${{ github.event.inputs.clean_to_keep }}
           runs_older_than: 0
@@ -38,7 +38,7 @@ jobs:
       # 当未设置数量时按天数清理
       - name: 按保留天数清理工作流
         if: ${{ github.event.inputs.clean_mode == 'date'}}
-        uses: igorjs/gh-actions-clean-workflow@main
+        uses: igorjs/gh-actions-clean-workflow@v6
         with:
           runs_to_keep: 0
           runs_older_than: ${{ github.event.inputs.clean_to_keep }}
