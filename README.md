@@ -1,4 +1,7 @@
 # 欧加真 SM8650 通用内核自动化编译脚本
+![STAR](https://img.shields.io/github/stars/cctv18/oppo_oplus_realme_sm8650?style=flat&logo=github)
+![FORK](https://img.shields.io/github/forks/cctv18/oppo_oplus_realme_sm8650?style=flat&logo=greasyfork&color=%2394E61A)
+![COOLAPK](https://img.shields.io/website?url=http%3A%2F%2Fwww.coolapk.com%2Fu%2F22650293&down_message=cctv18_2&logo=githubsponsors&logoColor=FF4500&label=%E9%85%B7%E5%AE%89&color=FF4500)
 ##### 
 一个更方便、快捷的自动化OPPO/一加/真我系列骁龙8Gen3(SM8650)机型的通用内核编译脚本。
 ##### 
