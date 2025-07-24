@@ -41,7 +41,7 @@ on:
           - 'true'
           - 'false'
       lz4_enable:
-        description: '是否安装 lz4 + zstd 补丁'
+        description: '是否安装 lz4 1.10.0 + zstd 1.5.7 补丁'
         required: true
         type: choice
         default: 'true'
@@ -58,7 +58,7 @@ on:
           - 'true'
           - 'default'
       better_net:
-        description: '是否开启网络功能增强优化配置'
+        description: '是否开启网络功能增强优化配置(优化代理连接,IPV6等功能)'
         required: true
         type: choice
         default: 'true'
@@ -66,7 +66,7 @@ on:
           - 'true'
           - 'false'
       ssg_enable:
-        description: '是否启用三星SSG IO调度器'
+        description: '是否启用三星SSG IO调度器(一加12等极少数机型开启后可能不开机,若出现bug请关闭此项)'
         required: true
         type: choice
         default: 'true'
@@ -82,7 +82,7 @@ on:
           - 'true'
           - 'false'
       kernel_suffix:
-        description: '内核后缀(留空默认,开头别加连字符)'
+        description: '内核后缀(留空默认,开头别加连字符,勿加空格等影响指令运行的保留字符)'
         required: false
         type: string
         default: ''
