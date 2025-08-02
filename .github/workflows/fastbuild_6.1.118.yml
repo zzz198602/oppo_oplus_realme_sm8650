@@ -33,29 +33,23 @@ on:
           - 'manual'
           - 'kprobes'
       kpm_enable:
-        description: '是否开启kpm(可能轻微增加耗电，不需要可关闭)'
+        description: '是否开启kpm(仅对sukisu生效;可能轻微增加耗电，不需要可关闭)'
         required: true
         type: choice
         default: 'true'
-        options:
-          - 'true'
-          - 'false'
-      lz4k_enable:
-        description: '是否安装 LZ4KD 补丁'
-        required: true
-        type: choice
-        default: 'false'
         options:
           - 'true'
           - 'false'
       lz4_enable:
-        description: '是否安装 lz4 1.10.0 + zstd 1.5.7 补丁'
+        description: '是否安装 lz4 1.10.0+zstd 1.5.7 补丁及 LZ4KD 补丁(0=均不安装,1=安装lz4&zstd补丁,2=安装lz4kd补丁,3=均安装,默认1)'
         required: true
         type: choice
-        default: 'true'
+        default: '1'
         options:
-          - 'true'
-          - 'false'
+          - '0'
+          - '1'
+          - '2'
+          - '3'
       bbr_enable:
         description: "是否启用bbr算法(优化上行数据,对手机日用无太大意义甚至可能负优化;false关闭,true仅加入算法,default设为默认)"
         required: true
@@ -73,30 +67,16 @@ on:
         options:
           - 'true'
           - 'false'
-      ssg_enable:
-        description: '是否启用三星SSG IO调度器(一加12等极少数机型开启后可能不开机,若出现bug请关闭此项)'
+      ssg_rekernel_enable:
+        description: '是否启用三星SSG IO调度器及Re-Kernel支持(0=均不安装,1=安装SSG IO调度器,2=安装Re-Kernel,3=均安装,默认1)'
         required: true
         type: choice
-        default: 'true'
+        default: '1'
         options:
-          - 'true'
-          - 'false'
-      rekernel_enable:
-        description: '是否启用Re-Kernel支持(用于与Freezer,NoActive等软件配合使用,提升冻结后台能力)'
-        required: true
-        type: choice
-        default: 'false'
-        options:
-          - 'true'
-          - 'false'
-      scx_enable:
-        description: '是否安装风驰内核驱动(未完成)'
-        required: true
-        type: choice
-        default: 'false'
-        options:
-          - 'true'
-          - 'false'
+          - '0'
+          - '1'
+          - '2'
+          - '3'
       kernel_suffix:
         description: '内核后缀(留空默认,开头别加连字符,勿加空格等影响指令运行的保留字符)'
         required: false
@@ -304,7 +284,7 @@ jobs:
           
       - name: 应用lz4 1.10.0 & zstd 1.5.7补丁
         run: |
-          if [ "${{ github.event.inputs.lz4_enable }}" == "true" ]; then
+          if [[ "${{ github.event.inputs.lz4_enable }}" == "1" || "${{ github.event.inputs.lz4_enable }}" == "3" ]]; then
             echo "正在添加lz4 1.10.0 & zstd 1.5.7补丁…"
             cd kernel_workspace
             git clone https://github.com/cctv18/oppo_oplus_realme_sm8650.git
@@ -318,7 +298,7 @@ jobs:
 
       - name: 应用 lz4kd 补丁
         run: |
-          if [[ "${{ github.event.inputs.lz4k_enable }}" == "true" ]]; then
+          if [[ "${{ github.event.inputs.lz4_enable }}" == "2" || "${{ github.event.inputs.lz4_enable }}" == "3" ]]; then
             echo "正在添加lz4kd补丁…"
             cd kernel_workspace/common
             cp -r ../SukiSU_patch/other/zram/lz4k/include/linux/* ./include/linux/
@@ -332,7 +312,7 @@ jobs:
         run: |
           cd kernel_workspace
           echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
-          if [ "${{ github.event.inputs.kpm_enable }}" == "true" ]; then
+          if [[ ${{ github.event.inputs.kpm_enable }} == 'true' && ${{ github.event.inputs.ksu_type }} == "sukisu" ]]; then
             echo "CONFIG_KPM=y" >> ./common/arch/arm64/configs/gki_defconfig
           fi
           if [ "${{ github.event.inputs.hook_method }}" == "kprobes" ]; then
@@ -379,7 +359,7 @@ jobs:
       - name: 启用网络功能增强优化配置
         run: |
           cd kernel_workspace
-          if [ "${{ github.event.inputs.better_net }}" == "true" ]; then
+          if [[ "${{ github.event.inputs.better_net }}" == "true" ]]; then
             #启用  BPF 流解析器,实现高性能网络流量处理,增强网络监控和分析能力
             echo "CONFIG_BPF_STREAM_PARSER=y" >> ./common/arch/arm64/configs/gki_defconfig
             #开启增强 Netfilter 防火墙扩展模块,支持基于地址类型的匹配规则,启用 IP 集合支持,提高防火墙规则灵活性,支持更复杂的流量过滤策略
@@ -445,7 +425,7 @@ jobs:
             #直播推流、云游戏上行链路等需优先保证吞吐量而非延迟敏感的场景，提升弱网吞吐性能，对抗运营商 QoS 限速。但由于TCP Brutal 仅在应用程序
             #对每个 TCP 连接设置带宽参数之后才能正常工作，绝大部分安卓应用都不支持该操作，故请勿将 TCP Brutal 设置成默认拥塞控制算法。
             echo "CONFIG_TCP_CONG_BRUTAL=y" >> ./common/arch/arm64/configs/gki_defconfig
-            if [ "${{ github.event.inputs.bbr_enable }}" == "default" ]; then
+            if [[ "${{ github.event.inputs.bbr_enable }}" == "default" ]]; then
               echo "正在将BBR设为默认拥塞控制算法..."
               echo "CONFIG_DEFAULT_TCP_CONG=bbr" >> ./common/arch/arm64/configs/gki_defconfig
             else
@@ -455,8 +435,8 @@ jobs:
 
       - name: 启用三星SSG IO调度器
         run: |
-          if [[ "${{ github.event.inputs.ssg_enable }}" == "true" ]]; then
-            echo "正在启用三星SSG IO调度器…"
+          if [[ "${{ github.event.inputs.ssg_rekernel_enable }}" == "1" || "${{ github.event.inputs.ssg_rekernel_enable }}" == "3" ]]; then
+            echo "正在启用三星SSG IO调度器(一加12等极少数机型开启后可能不开机,若出现bug请关闭此项)…"
             cd kernel_workspace
             echo "CONFIG_MQ_IOSCHED_SSG=y" >> ./common/arch/arm64/configs/gki_defconfig
             echo "CONFIG_MQ_IOSCHED_SSG_CGROUP=y" >> ./common/arch/arm64/configs/gki_defconfig
@@ -464,8 +444,8 @@ jobs:
 
       - name: 启用Re-Kernel支持
         run: |
-          if [[ "${{ github.event.inputs.rekernel_enable }}" == "true" ]]; then
-            echo "正在启用Re-Kernel支持…"
+          if [[ "${{ github.event.inputs.ssg_rekernel_enable }}" == "2" || "${{ github.event.inputs.ssg_rekernel_enable }}" == "3" ]]; then
+            echo "正在启用Re-Kernel支持(用于与Freezer,NoActive等软件配合使用,提升冻结后台能力)…"
             cd kernel_workspace
             echo "CONFIG_REKERNEL=y" >> ./common/arch/arm64/configs/gki_defconfig
           fi
@@ -507,12 +487,12 @@ jobs:
           export CCACHE_MAXSIZE="3G"
           
           cd kernel_workspace
-          if [[ ${{ github.event.inputs.scx_enable }} == "true" ]]; then
-            git clone https://github.com/cctv18/sched_ext.git
-            rm -rf ./sched_ext/.git
-            rm -rf ./sched_ext/README.md
-            cp -r ./sched_ext/* ./common/kernel/sched
-          fi
+          #if [[ ${{ github.event.inputs.scx_enable }} == "true" ]]; then
+          #  git clone https://github.com/cctv18/sched_ext.git
+          #  rm -rf ./sched_ext/.git
+          #  rm -rf ./sched_ext/README.md
+          #  cp -r ./sched_ext/* ./common/kernel/sched
+          #fi
           cd common
           #在构建内核的同时清除不必要的.NET, Android NDK, Haskell, CodeQL运行库，清理空间且不阻塞后续步骤运行
           sudo rm -rf /usr/share/dotnet &
@@ -526,15 +506,17 @@ jobs:
           echo "编译后空间:"
           df -h
          
-      - name: 应用patch_linux并修补内核
-        if: ${{ github.event.inputs.kpm_enable == 'true' }}
+      - name: 应用KPM并修补内核
         run: |
-          cd kernel_workspace/common/out/arch/arm64/boot
-          curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.12.0/patch_linux
-          chmod +x patch_linux
-          ./patch_linux
-          rm -f Image
-          mv oImage Image
+          if [[ ${{ github.event.inputs.kpm_enable }} == 'true' && ${{ github.event.inputs.ksu_type }} == "sukisu" ]]; then
+            echo "正在应用KPM并修补内核..."
+            cd kernel_workspace/common/out/arch/arm64/boot
+            curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.12.0/patch_linux
+            chmod +x patch_linux
+            ./patch_linux
+            rm -f Image
+            mv oImage Image
+          fi
           
       - name: 克隆 AnyKernel3 并打包
         run: |
@@ -543,11 +525,11 @@ jobs:
           rm -rf ./AnyKernel3/.git
           cd AnyKernel3
           cp ../common/out/arch/arm64/boot/Image ./Image
-          if [ ! -f ./Image ]; then
+          if [[ ! -f ./Image ]]; then
             echo "未找到内核镜像文件，构建可能出错"
             exit 1
           fi
-          if [[ ${{ github.event.inputs.lz4k_enable }} == "true" ]]; then
+          if [[ "${{ github.event.inputs.lz4_enable }}" == "2" || "${{ github.event.inputs.lz4_enable }}" == "3" ]]; then
             wget https://raw.githubusercontent.com/cctv18/oppo_oplus_realme_sm8650/refs/heads/main/zram.zip
           fi
           if [[ -n "${{ github.event.inputs.kernel_suffix }}" ]]; then
@@ -600,6 +582,30 @@ jobs:
             KSU_BRANCH="KernelSU Next"
           fi
           echo "KSU_BRANCH=$KSU_BRANCH" >> $GITHUB_ENV
+          if [[ "${{ github.event.inputs.lz4_enable }}" == "2" || "${{ github.event.inputs.lz4_enable }}" == "3" ]]; then
+            lz4kd_enable="true"
+          else
+            lz4kd_enable="false"
+          fi
+          if [[ "${{ github.event.inputs.lz4_enable }}" == "1" || "${{ github.event.inputs.lz4_enable }}" == "3" ]]; then
+            lz4_zstd_enable="true"
+          else
+            lz4_zstd_enable="false"
+          fi
+          if [[ "${{ github.event.inputs.ssg_rekernel_enable }}" == "1" || "${{ github.event.inputs.ssg_rekernel_enable }}" == "3" ]]; then
+            ssg_enable="true"
+          else
+            ssg_enable="false"
+          fi
+          if [[ "${{ github.event.inputs.ssg_rekernel_enable }}" == "2" || "${{ github.event.inputs.ssg_rekernel_enable }}" == "3" ]]; then
+            rekernel_enable="true"
+          else
+            rekernel_enable="false"
+          fi
+          echo "lz4kd_enable=$lz4kd_enable" >> $GITHUB_ENV
+          echo "lz4_zstd_enable=$lz4_zstd_enable" >> $GITHUB_ENV
+          echo "ssg_enable=$ssg_enable" >> $GITHUB_ENV
+          echo "rekernel_enable=$rekernel_enable" >> $GITHUB_ENV
          
       - name: 创建发布
         id: create_release
@@ -614,13 +620,13 @@ jobs:
             - 机型：欧加真骁龙8Gen3 6.1 Android 14内核通用（基于一加12 Android 14 版官方OKI源码）
             - 特性：${{ env.KSU_BRANCH }} + SUSFS + VFS + KPM
             - hook模式：${{ github.event.inputs.hook_method }}
-            - LZ4KD支持：${{ github.event.inputs.lz4k_enable }}
-            - LZ4支持：${{ github.event.inputs.lz4_enable }}
+            - KPM支持 (仅对sukisu生效)：${{ github.event.inputs.kpm_enable }}
+            - LZ4KD支持：${{ env.lz4kd_enable }}
+            - LZ4支持：${{ env.lz4_zstd_enable }}
             - 网络功能增强：${{ github.event.inputs.better_net }}
             - BBR/Brutal 等拥塞控制算法支持：${{ github.event.inputs.bbr_enable }}
-            - 三星SSG IO调度器支持：${{ github.event.inputs.ssg_enable }}
-            - Re-Kernel支持：${{ github.event.inputs.rekernel_enable }}
-            - 风驰内核支持：${{ github.event.inputs.scx_enable }}
+            - 三星SSG IO调度器支持：${{ env.ssg_enable }}
+            - Re-Kernel支持：${{ env.rekernel_enable }}
             - 推荐系统：ColorOS 15 / RealmeUI 6.0
             - SukiSU管理器下载：[SukiSU-Ultra](https://github.com/ShirkNeko/SukiSU-Ultra/releases)
             ### ⏫️ 更新内容：
