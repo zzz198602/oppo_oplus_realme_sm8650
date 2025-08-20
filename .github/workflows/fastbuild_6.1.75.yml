@@ -148,18 +148,6 @@ jobs:
             echo "ccache缓存命中详情:"
             ccache -sv
           fi
-
-      - name: 缓存Clang20工具链
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/kernel_workspace/clang20
-            ${{ github.workspace }}/kernel_workspace/build-tools
-          key: |
-            cache-v20-clang-all
-          restore-keys: |
-            cache-v20-clang-
-            cache-v20-
       
       - name: 初始化源码仓库及llvm-Clang20工具链
         run: |
@@ -170,24 +158,17 @@ jobs:
           mv "android_kernel_common_oneplus_sm8650-oneplus-sm8650_v_15.0.0_oneplus12" common &&
           rm -rf common.zip &
           
-          if [ ! -d "clang20" ]; then
-            echo "正在克隆llvm-Clang20工具链..." &&
-            mkdir -p clang20 &&
-            aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/clang-r547379.zip -o clang.zip &&
-            unzip -q clang.zip -d clang20 &&
-            rm -rf clang.zip &
-          else
-            echo "检测到缓存的llvm-Clang20工具链!" &
-          fi
+          echo "正在克隆llvm-Clang20工具链..." &&
+          mkdir -p clang20 &&
+          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/clang-r547379.zip -o clang.zip &&
+          unzip -q clang.zip -d clang20 &&
+          rm -rf clang.zip &
           
-          if [ ! -d "build-tools" ]; then
-            echo "正在克隆构建工具..." &&
-            aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/build-tools.zip -o build-tools.zip &&
-            unzip -q build-tools.zip &&
-            rm -rf build-tools.zip &
-          else
-            echo "检测到缓存的构建工具!" &
-          fi
+          echo "正在克隆构建工具..." &&
+          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/build-tools.zip -o build-tools.zip &&
+          unzip -q build-tools.zip &&
+          rm -rf build-tools.zip &
+          
           wait
           echo "所有源码及llvm-Clang20工具链初始化完成！"
           echo "正在去除 ABI 保护 & 去除 dirty 后缀..."
