@@ -117,7 +117,7 @@ echo ">>> 克隆补丁仓库..."
 cd "$WORKDIR/kernel_workspace"
 echo ">>> 应用 SUSFS&hook 补丁..."
 if [[ "$KSU_BRANCH" == "y" ]]; then
-  git clone https://github.com/ShirkNeko/susfs4ksu.git -b gki-android14-6.1 && cd susfs4ksu && git checkout 0e19a05277d28182c7b653580117145c53e69e92 && cd ..
+  git clone https://github.com/shirkneko/susfs4ksu.git -b gki-android14-6.1
   git clone https://github.com/ShirkNeko/SukiSU_patch.git
   cp ./susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch ./common/
   if [[ "$APPLY_HOOKS" == "m" || "$APPLY_HOOKS" == "M" ]]; then
