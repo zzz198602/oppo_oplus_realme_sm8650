@@ -66,11 +66,11 @@ cd "$WORKDIR"
 
 # ===== 安装构建依赖 =====
 echo ">>> 安装构建依赖..."
+sudo apt-mark hold firefox && apt-mark hold libc-bin && apt-mark hold man-db
+sudo rm -rf /var/lib/man-db/auto-update
 sudo apt-get update
-sudo apt-get install curl bison flex make binutils dwarves git lld pahole zip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev -y
-sudo rm -rf ./llvm.sh
-sudo wget https://apt.llvm.org/llvm.sh
-sudo chmod +x llvm.sh
+sudo apt-get install --no-install-recommends -y curl bison flex clang binutils dwarves git lld pahole zip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev
+sudo rm -rf ./llvm.sh && wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh
 sudo ./llvm.sh 20 all
 
 # ===== 初始化仓库 =====
@@ -345,6 +345,7 @@ if [[ "$APPLY_BBG" == "y" || "$APPLY_BBG" == "Y" ]]; then
   sed -i 's/selinuxfs.o //g' "./selinux/Makefile"
   sed -i 's/hooks.o //g' "./selinux/Makefile"
   cat "./baseband-guard/sepatch.txt" >> "./selinux/Makefile"
+  cd ../../
 fi
 
 # ===== 禁用 defconfig 检查 =====
