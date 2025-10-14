@@ -8,7 +8,6 @@ cd "$SCRIPT_DIR"
 # ===== 设置自定义参数 =====
 echo "===== 欧加真SM8650通用6.1.57 A14 OKI内核本地编译脚本 By Coolapk@cctv18 ====="
 echo ">>> 读取用户配置..."
-SOC_BRANCH=${SOC_BRANCH:-sm8650}
 MANIFEST=${MANIFEST:-oppo+oplus+realme}
 read -p "请输入自定义内核后缀（默认：android14-11-o-gca13bffobf09）: " CUSTOM_SUFFIX
 CUSTOM_SUFFIX=${CUSTOM_SUFFIX:-android14-11-o-gca13bffobf09}
@@ -32,8 +31,6 @@ read -p "是否启用Re-Kernel？(y/n，默认：n): " APPLY_REKERNEL
 APPLY_REKERNEL=${APPLY_REKERNEL:-n}
 read -p "是否启用内核级基带保护？(y/n，默认：n): " APPLY_BBG
 APPLY_BBG=${APPLY_BBG:-n}
-read -p "是否安装风驰内核驱动（未完成）？(y/n，默认：n): " APPLY_SCX
-APPLY_SCX=${APPLY_SCX:-n}
 
 if [[ "$KSU_BRANCH" == "y" || "$KSU_BRANCH" == "Y" ]]; then
   KSU_TYPE="SukiSU Ultra"
@@ -43,7 +40,6 @@ fi
 
 echo
 echo "===== 配置信息 ====="
-echo "SoC 分支: $SOC_BRANCH"
 echo "适用机型: $MANIFEST"
 echo "自定义内核后缀: -$CUSTOM_SUFFIX"
 echo "KSU分支版本: $KSU_TYPE"
@@ -56,7 +52,6 @@ echo "应用 BBR 等算法: $APPLY_BBR"
 echo "启用三星SSG IO调度器: $APPLY_SSG"
 echo "启用Re-Kernel: $APPLY_REKERNEL"
 echo "启用内核级基带保护: $APPLY_BBG"
-echo "应用风驰内核驱动: $APPLY_SCX"
 echo "===================="
 echo
 
@@ -361,12 +356,6 @@ done
 # ===== 编译内核 =====
 echo ">>> 开始编译内核..."
 cd common
-if [[ "$APPLY_SCX" == "y" || "$APPLY_SCX" == "Y" ]]; then
-  git clone https://github.com/cctv18/sched_ext.git
-  rm -rf ./sched_ext/.git
-  rm -rf ./sched_ext/README.md
-  cp -r ./sched_ext/* ./kernel/sched
-fi
 make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-O2 KCFLAGS+=-Wno-error gki_defconfig all
 echo ">>> 内核编译成功！"
 
@@ -405,8 +394,7 @@ if [[ "$APPLY_LZ4KD" == "y" || "$APPLY_LZ4KD" == "Y" ]]; then
 fi
 
 # ===== 生成 ZIP 文件名 =====
-MANIFEST_BASENAME=${MANIFEST}
-ZIP_NAME="Anykernel3-${MANIFEST_BASENAME}"
+ZIP_NAME="Anykernel3-${MANIFEST}"
 
 if [[ "$APPLY_LZ4KD" == "y" || "$USE_PATCH_LINUX" == "y" ]]; then
   ZIP_NAME="${ZIP_NAME}-lz4kd-kpm-vfs"
