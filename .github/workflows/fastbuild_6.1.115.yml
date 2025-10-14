@@ -27,10 +27,10 @@ on:
           - 'syscall'
           - 'kprobes'
       kpm_enable:
-        description: '是否开启kpm(仅对sukisu生效;可能轻微增加耗电，不需要可关闭)'
+        description: '是否开启kpm(仅对sukisu生效; 可能轻微增加耗电，不需要可保持默认关闭)'
         required: true
         type: choice
-        default: 'true'
+        default: 'false'
         options:
           - 'true'
           - 'false'
@@ -75,7 +75,7 @@ on:
         description: '是否开启内核级基带保护(阻止一切对非用户分区的写入，有效防止格机)'
         required: true
         type: boolean
-        default: 'false'
+        default: 'true'
       kernel_suffix:
         description: '内核后缀(留空默认,开头别加连字符,勿加空格等影响指令运行的保留字符)'
         required: false
