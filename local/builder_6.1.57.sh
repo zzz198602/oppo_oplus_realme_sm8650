@@ -396,14 +396,31 @@ fi
 # ===== 生成 ZIP 文件名 =====
 ZIP_NAME="Anykernel3-${MANIFEST}"
 
-if [[ "$APPLY_LZ4KD" == "y" || "$USE_PATCH_LINUX" == "y" ]]; then
-  ZIP_NAME="${ZIP_NAME}-lz4kd-kpm-vfs"
-elif [[ "$APPLY_LZ4KD" == "y" || "$APPLY_LZ4KD" == "Y" ]]; then
-  ZIP_NAME="${ZIP_NAME}-lz4kd-vfs"
-elif [[ "$USE_PATCH_LINUX" == "y" || "$USE_PATCH_LINUX" == "Y" ]]; then
-  ZIP_NAME="${ZIP_NAME}-kpm-vfs"
+if [[ "$APPLY_HOOKS" == "m" || "$APPLY_HOOKS" == "M" ]]; then
+  ZIP_NAME="${ZIP_NAME}-manual"
+elif [[ "$APPLY_HOOKS" == "s" || "$APPLY_HOOKS" == "S" ]]; then
+  ZIP_NAME="${ZIP_NAME}-syscall"
+else
+  ZIP_NAME="${ZIP_NAME}-kprobe"
 fi
-
+if [[ "$APPLY_LZ4KD" == "y" || "$APPLY_LZ4KD" == "Y" ]]; then
+  ZIP_NAME="${ZIP_NAME}-lz4kd"
+fi
+if [[ "$APPLY_LZ4" == "y" || "$APPLY_LZ4" == "Y" ]]; then
+  ZIP_NAME="${ZIP_NAME}-lz4-zstd"
+fi
+if [[ "$USE_PATCH_LINUX" == "y" || "$USE_PATCH_LINUX" == "Y" ]]; then
+  ZIP_NAME="${ZIP_NAME}-kpm"
+fi
+if [[ "$APPLY_BBR" == "y" || "$APPLY_BBR" == "Y" ]]; then
+  ZIP_NAME="${ZIP_NAME}-bbr"
+if [[ "$APPLY_SSG" == "y" || "$APPLY_SSG" == "Y" ]]; then
+  ZIP_NAME="${ZIP_NAME}-ssg"
+if [[ "$APPLY_REKERNEL" == "y" || "$APPLY_REKERNEL" == "Y" ]]; then
+  ZIP_NAME="${ZIP_NAME}-rek"
+if [[ "$APPLY_BBG" == "y" || "$APPLY_BBG" == "Y" ]]; then
+  ZIP_NAME="${ZIP_NAME}-bbg"
+fi
 ZIP_NAME="${ZIP_NAME}-v$(date +%Y%m%d).zip"
 
 # ===== 打包 ZIP 文件，包括 zram.zip（如果存在） =====
