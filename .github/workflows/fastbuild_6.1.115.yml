@@ -93,17 +93,46 @@ jobs:
     outputs:
       ksuver: ${{ steps.ksu_version.outputs.ksuver }}
     steps:
-      - name: 安装配置环境依赖
+      - name: 安装环境依赖+初始化源码仓库及llvm-Clang20工具链
         run: |
-          sudo apt-mark hold firefox
-          sudo apt-mark hold libc-bin
-          sudo apt purge man-db
-          sudo rm -rf /var/lib/man-db/auto-update
-          sudo apt update
-          sudo apt-get install -y --no-install-recommends \
-            curl bison flex make binutils git perl gcc python3 \
-            python-is-python3 bc libssl-dev libelf-dev \
-            bc aria2 zip unzip ccache
+          rm -rf kernel_workspace
+          mkdir kernel_workspace
+          cd kernel_workspace
+          
+          sudo apt-mark hold firefox &&
+          sudo apt-mark hold libc-bin &&
+          sudo apt purge man-db &&
+          sudo rm -rf /var/lib/man-db/auto-update &&
+          sudo apt update &&
+          sudo apt-get install -y --no-install-recommends binutils python-is-python3 libssl-dev libelf-dev ccache &
+          #旧版完整指令：（由于经过验证大部分指令已内置于GitHub Action环境中，故进行精简）
+          #sudo apt-get install -y --no-install-recommends curl bison flex make binutils git perl gcc python3 python-is-python3 bc libssl-dev libelf-dev zip unzip ccache
+          
+          echo "正在克隆源码仓库..."
+          aria2c -s16 -x16 -k1M https://github.com/cctv18/android_kernel_oneplus_mt6989/archive/refs/heads/oneplus/mt6989_v_15.0.2_ace5_race.zip -o common.zip && 
+          unzip -q common.zip && 
+          mv "android_kernel_oneplus_mt6989-oneplus-mt6989_v_15.0.2_ace5_race" common &&
+          rm -rf common.zip &
+          
+          echo "正在克隆llvm-Clang20工具链..." &&
+          mkdir -p clang20 &&
+          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/clang-r547379.zip -o clang.zip &&
+          unzip -q clang.zip -d clang20 &&
+          rm -rf clang.zip &
+          
+          echo "正在克隆构建工具..." &&
+          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/build-tools.zip -o build-tools.zip &&
+          unzip -q build-tools.zip &&
+          rm -rf build-tools.zip &
+          
+          wait
+          echo "所有源码及llvm-Clang20工具链初始化完成！"
+          echo "正在去除 ABI 保护 & 去除 dirty 后缀..."
+          rm common/android/abi_gki_protected_exports_* || true
+          for f in common/scripts/setlocalversion; do
+            sed -i 's/ -dirty//g' "$f"
+            sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' "$f"
+          done
 
       - name: 配置ccache目录
         run: |
@@ -112,8 +141,6 @@ jobs:
           echo "当前磁盘空间："
           df -h
           echo "当前构建内核版本：6.1.115"
-          rm -rf kernel_workspace
-          mkdir kernel_workspace
 
       - name: 载入当前版本内核的 ccache缓存
         uses: actions/cache@v4
@@ -152,35 +179,6 @@ jobs:
             echo "ccache缓存命中详情:"
             ccache -sv
           fi
-      
-      - name: 初始化源码仓库及llvm-Clang20工具链
-        run: |
-          cd kernel_workspace
-          echo "正在克隆源码仓库..."
-          aria2c -s16 -x16 -k1M https://github.com/cctv18/android_kernel_oneplus_mt6989/archive/refs/heads/oneplus/mt6989_v_15.0.2_ace5_race.zip -o common.zip && 
-          unzip -q common.zip && 
-          mv "android_kernel_oneplus_mt6989-oneplus-mt6989_v_15.0.2_ace5_race" common &&
-          rm -rf common.zip &
-          
-          echo "正在克隆llvm-Clang20工具链..." &&
-          mkdir -p clang20 &&
-          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/clang-r547379.zip -o clang.zip &&
-          unzip -q clang.zip -d clang20 &&
-          rm -rf clang.zip &
-          
-          echo "正在克隆构建工具..." &&
-          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang20-r547379/build-tools.zip -o build-tools.zip &&
-          unzip -q build-tools.zip &&
-          rm -rf build-tools.zip &
-          
-          wait
-          echo "所有源码及llvm-Clang20工具链初始化完成！"
-          echo "正在去除 ABI 保护 & 去除 dirty 后缀..."
-          rm common/android/abi_gki_protected_exports_* || true
-          for f in common/scripts/setlocalversion; do
-            sed -i 's/ -dirty//g' "$f"
-            sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' "$f"
-          done
 
       - name: 添加KernelSU
         id: ksu_version
