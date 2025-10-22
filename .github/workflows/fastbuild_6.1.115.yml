@@ -54,7 +54,7 @@ on:
           - 'true'
           - 'default'
       better_net:
-        description: '是否开启网络功能增强优化配置(优化代理连接,IPV6等功能;在ace5竞速版上可能导致bug,建议关闭)'
+        description: '是否开启网络功能拓展配置(用于为ipset及需要iptables等高级网络功能内核支持的程序提供支持;在天玑机型上可能导致bug,建议关闭)'
         required: true
         type: choice
         default: 'false'
